@@ -227,21 +227,19 @@
 <!-- TAB PANELS -->
 <div id="panel-report" class="panel active">
 
-  <!-- Technician -->
+  <!-- Employee Info -->
   <div class="card">
-    <div class="card-title">👤 Technician</div>
-    <div class="field"><label>Name *</label><input id="tech-name" type="text" placeholder="Your name"></div>
+    <div class="card-title">👤 Employee Info</div>
+    <div class="field"><label>Name *</label><input id="tech-name" type="text" placeholder="Full name"></div>
+    <div class="row2">
+      <div class="field"><label>Department *</label><input id="department" type="text" placeholder="e.g. Operations"></div>
+      <div class="field"><label>Employee ID *</label><input id="employee-id" type="text" placeholder="e.g. 10042"></div>
+    </div>
+    <div class="field"><label>Job Title *</label><input id="job-title" type="text" placeholder="e.g. Floor Supervisor"></div>
+    <div class="field"><label>Email</label><input id="email" type="email" placeholder="your@email.com"></div>
   </div>
 
-  <!-- Report Details -->
-  <div class="card">
-    <div class="card-title">📋 Report Details</div>
-    <div class="field"><label>Report Number *</label><input id="report-num" type="text" placeholder="e.g. 2024-001"></div>
-    <div class="field"><label>Customer / Company *</label><input id="customer" type="text" placeholder="Client name"></div>
-    <div class="field"><label>Machine Serial</label><input id="machine-serial" type="text" placeholder="Optional"></div>
-    <div class="field"><label>Service Location *</label><input id="location" type="text" placeholder="City, State or Address"></div>
-    <div class="field"><label>Service Date(s) *</label><input id="service-date" type="text" placeholder="e.g. Jan 10–12, 2025"></div>
-  </div>
+
 
   <!-- Mileage -->
   <div class="card">
@@ -457,11 +455,11 @@ function calcTotals() {
 function getFormData() {
   return {
     techName: document.getElementById('tech-name').value,
-    reportNum: document.getElementById('report-num').value,
-    customer: document.getElementById('customer').value,
-    machineSerial: document.getElementById('machine-serial').value,
-    location: document.getElementById('location').value,
-    serviceDate: document.getElementById('service-date').value,
+    department: document.getElementById('department').value,
+    employeeId: document.getElementById('employee-id').value,
+    jobTitle: document.getElementById('job-title').value,
+    email: document.getElementById('email').value,
+    reportNum: ('Report-' + Date.now()),
     miles: document.getElementById('miles').value,
     rate: document.getElementById('rate').value,
     cashAdvance: document.getElementById('cash-advance').value,
@@ -494,8 +492,8 @@ function renderSavedReports() {
   el.innerHTML = savedReports.map((r,i) => `
     <div class="report-item">
       <div>
-        <div class="fw-bold">${r.reportNum || 'Untitled'}</div>
-        <div class="meta">${r.customer||''} · ${r.serviceDate||''}</div>
+        <div class="fw-bold">${r.techName || 'Untitled'}</div>
+        <div class="meta">${r.jobTitle||''} · ${r.department||''}</div>
       </div>
       <button class="load-btn" onclick="loadReport(${i})">Load</button>
     </div>
@@ -505,11 +503,10 @@ function renderSavedReports() {
 function loadReport(i) {
   const r = savedReports[i];
   document.getElementById('tech-name').value = r.techName||'';
-  document.getElementById('report-num').value = r.reportNum||'';
-  document.getElementById('customer').value = r.customer||'';
-  document.getElementById('machine-serial').value = r.machineSerial||'';
-  document.getElementById('location').value = r.location||'';
-  document.getElementById('service-date').value = r.serviceDate||'';
+  document.getElementById('department').value = r.department||'';
+  document.getElementById('employee-id').value = r.employeeId||'';
+  document.getElementById('job-title').value = r.jobTitle||'';
+  document.getElementById('email').value = r.email||'';
   document.getElementById('miles').value = r.miles||'';
   document.getElementById('rate').value = r.rate||'';
   document.getElementById('cash-advance').value = r.cashAdvance||'';
@@ -524,7 +521,7 @@ function loadReport(i) {
 // ── CLEAR ─────────────────────────────────────────────────
 function clearAll() {
   if (!confirm('Clear all fields and expenses?')) return;
-  ['tech-name','report-num','customer','machine-serial','location','service-date','miles','rate','mileage-total','cash-advance','other-advance'].forEach(id => {
+  ['tech-name','department','employee-id','job-title','email','miles','rate','mileage-total','cash-advance','other-advance'].forEach(id => {
     const el = document.getElementById(id);
     el.value = '';
   });
@@ -564,12 +561,11 @@ function exportPDF() {
   const fv = id => document.getElementById(id).value || '—';
 
   const fields = [
-    ['Technician', fv('tech-name')],
-    ['Report #', fv('report-num')],
-    ['Customer / Company', fv('customer')],
-    ['Machine Serial', fv('machine-serial')],
-    ['Service Location', fv('location')],
-    ['Service Date(s)', fv('service-date')],
+    ['Name', fv('tech-name')],
+    ['Department', fv('department')],
+    ['Employee ID', fv('employee-id')],
+    ['Job Title', fv('job-title')],
+    ['Email', fv('email') || '—'],
   ];
 
   fields.forEach(([label, val]) => {
@@ -616,8 +612,8 @@ function exportPDF() {
   doc.setTextColor(owed < 0 ? 220 : 22, owed < 0 ? 38 : 163, owed < 0 ? 38 : 74);
   doc.text((owed < 0 ? 'Overpaid: $' : 'Total Owed: $') + Math.abs(owed).toFixed(2), margin, y);
 
-  const rn = document.getElementById('report-num').value || 'expense-report';
-  doc.save(`atlantic-veal-${rn}.pdf`);
+  const empName = (document.getElementById('tech-name').value || 'expense-report').replace(/\s+/g,'-').toLowerCase();
+  doc.save(`atlantic-veal-${empName}.pdf`);
   showToast('📄 PDF exported!');
 }
 
