@@ -516,40 +516,68 @@ function exportPDF() {
   doc.setTextColor(owed < 0 ? 220 : 22, owed < 0 ? 38 : 163, owed < 0 ? 38 : 74);
   doc.text((owed < 0 ? 'Overpaid: $' : 'Total Owed: $') + Math.abs(owed).toFixed(2), margin, y);
 
-  // Receipt images — one full page per receipt
-  expenses.filter(function(e) { return e.receipt; }).forEach(function(e) {
-    doc.addPage();
-    var ry = 50;
-    doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(40,40,40);
-    var header = 'Receipt: ' + (e.category||'Expense') + '   $' + (parseFloat(e.amount)||0).toFixed(2);
-    if (e.date) header += '   ' + e.date;
-    doc.text(header, margin, ry); ry += 20;
-    if (e.description) {
-      doc.setFont('helvetica','normal'); doc.setFontSize(10);
-      doc.text(e.description, margin, ry); ry += 16;
+  // Receipt images — 4 per page in a 2x2 grid
+  var receipts = expenses.filter(function(e) { return e.receipt; });
+  if (receipts.length > 0) {
+    var pageW = doc.internal.pageSize.getWidth();
+    var pageH = doc.internal.pageSize.getHeight();
+    var cols = 2, rows = 2;
+    var perPage = cols * rows;
+    var padX = 40, padY = 40;
+    var gapX = 16, gapY = 50; // gapY includes label space
+    var cellW = (pageW - padX * 2 - gapX) / cols;
+    var cellH = (pageH - padY * 2 - gapY * (rows - 1)) / rows;
+    var labelH = 28; // space reserved at top of each cell for text label
+    var imgH = cellH - labelH;
+
+    for (var p = 0; p < Math.ceil(receipts.length / perPage); p++) {
+      doc.addPage();
+      // Page header
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(26,115,232);
+      doc.text('Atlantic Veal — Receipts', padX, 25);
+      doc.setDrawColor(200,200,200); doc.line(padX, 30, pageW - padX, 30);
+
+      var pageReceipts = receipts.slice(p * perPage, (p + 1) * perPage);
+      pageReceipts.forEach(function(e, idx) {
+        var col = idx % cols;
+        var row = Math.floor(idx / cols);
+        var cx = padX + col * (cellW + gapX);
+        var cy = padY + row * (cellH + gapY);
+
+        // Label
+        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(40,40,40);
+        var label = (e.category || 'Expense') + '  $' + (parseFloat(e.amount)||0).toFixed(2);
+        if (e.date) label += '  ' + e.date;
+        doc.text(label, cx, cy + 10);
+        if (e.description) {
+          doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(100,100,100);
+          doc.text(e.description, cx, cy + 19);
+        }
+
+        // Image box
+        var imgY = cy + labelH;
+        try {
+          var imgData = e.receipt;
+          var fmt = imgData.indexOf('data:image/png') === 0 ? 'PNG' : 'JPEG';
+          var props = doc.getImageProperties(imgData);
+          var scale = Math.min(cellW / props.width, imgH / props.height);
+          var iw = props.width * scale;
+          var ih = props.height * scale;
+          // Center in cell
+          var ix = cx + (cellW - iw) / 2;
+          var iy = imgY + (imgH - ih) / 2;
+          // Draw border
+          doc.setDrawColor(220,220,220); doc.setLineWidth(0.5);
+          doc.rect(cx, imgY, cellW, imgH);
+          doc.addImage(imgData, fmt, ix, iy, iw, ih);
+        } catch(err) {
+          doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(150,150,150);
+          doc.rect(cx, imgY, cellW, imgH);
+          doc.text('Image unavailable', cx + 4, imgY + imgH / 2);
+        }
+      });
     }
-    doc.setDrawColor(200,200,200); doc.line(margin, ry, 560, ry); ry += 16;
-    // Embed image — strip data URL prefix and detect format
-    try {
-      var imgData = e.receipt;
-      var fmt = 'JPEG';
-      if (imgData.indexOf('data:image/png') === 0) fmt = 'PNG';
-      var pageW = doc.internal.pageSize.getWidth();
-      var pageH = doc.internal.pageSize.getHeight();
-      var maxW = pageW - margin * 2;
-      var maxH = pageH - ry - 30;
-      var props = doc.getImageProperties(imgData);
-      var iw = props.width;
-      var ih = props.height;
-      var scale = Math.min(maxW / iw, maxH / ih, 1);
-      iw = iw * scale;
-      ih = ih * scale;
-      doc.addImage(imgData, fmt, margin, ry, iw, ih);
-    } catch(err) {
-      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(150,150,150);
-      doc.text('(Image could not be embedded)', margin, ry);
-    }
-  });
+  }
 
   var empName = (document.getElementById('tech-name').value || 'expense-report').replace(/\s+/g,'-').toLowerCase();
   doc.save('atlantic-veal-' + empName + '.pdf');
