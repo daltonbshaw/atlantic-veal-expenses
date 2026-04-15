@@ -8,7 +8,6 @@
 <style>
   :root {
     --blue: #1a73e8;
-    --blue-dark: #1558b0;
     --bg: #f4f6fb;
     --card: #fff;
     --border: #e0e4ef;
@@ -21,194 +20,59 @@
     --tab-h: 60px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding-bottom: var(--tab-h);
-  }
-
-  /* HEADER */
-  .app-header {
-    background: var(--blue);
-    color: #fff;
-    padding: 18px 16px 14px;
-    text-align: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 8px rgba(26,115,232,0.3);
-  }
-  .app-header h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.02em; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: var(--tab-h); }
+  .app-header { background: var(--blue); color: #fff; padding: 18px 16px 14px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(26,115,232,0.3); }
+  .app-header h1 { font-size: 1.3rem; font-weight: 700; }
   .app-header .subtitle { font-size: 0.8rem; opacity: 0.85; margin-top: 2px; }
   .header-row { display: flex; align-items: center; justify-content: space-between; }
   .adv-btn { background: rgba(255,255,255,0.18); border: none; color: #fff; border-radius: 8px; padding: 6px 10px; font-size: 0.85rem; cursor: pointer; }
-
-  /* TABS */
-  .tab-bar {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    height: var(--tab-h);
-    background: var(--card);
-    border-top: 1px solid var(--border);
-    display: flex;
-    z-index: 200;
-  }
-  .tab-btn {
-    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    border: none; background: none; color: var(--muted); font-size: 0.7rem; cursor: pointer; gap: 3px;
-    transition: color 0.15s;
-  }
+  .tab-bar { position: fixed; bottom: 0; left: 0; right: 0; height: var(--tab-h); background: var(--card); border-top: 1px solid var(--border); display: flex; z-index: 200; }
+  .tab-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border: none; background: none; color: var(--muted); font-size: 0.7rem; cursor: pointer; gap: 3px; }
   .tab-btn.active { color: var(--blue); }
   .tab-btn .icon { font-size: 1.4rem; }
-
-  /* PANELS */
   .panel { display: none; padding: 14px; }
   .panel.active { display: block; }
-
-  /* CARDS */
-  .card {
-    background: var(--card);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin-bottom: 14px;
-    box-shadow: var(--shadow);
-  }
-  .card-title {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--muted);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  /* FORM */
+  .card { background: var(--card); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow); }
+  .card-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 12px; }
   .field { margin-bottom: 12px; }
   .field label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
-  .field input, .field select, .field textarea {
-    width: 100%; border: 1.5px solid var(--border); border-radius: 9px;
-    padding: 9px 12px; font-size: 0.95rem; background: var(--bg);
-    color: var(--text); outline: none; transition: border 0.15s;
-    font-family: inherit;
-  }
+  .field input, .field select { width: 100%; border: 1.5px solid var(--border); border-radius: 9px; padding: 9px 12px; font-size: 0.95rem; background: var(--bg); color: var(--text); outline: none; font-family: inherit; transition: border 0.15s; }
   .field input:focus, .field select:focus { border-color: var(--blue); background: #fff; }
-  .field .readonly { background: #f0f3fa; color: var(--muted); }
-
-  /* ROWS */
+  .readonly { background: #f0f3fa !important; color: var(--muted) !important; }
   .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-
-  /* MILEAGE CALC */
-  #mileage-total { font-weight: 700; color: var(--blue); }
-
-  /* EXPENSES */
-  .expense-item {
-    background: var(--bg);
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 8px;
-    border: 1.5px solid var(--border);
-    position: relative;
-  }
-  .expense-item .del-btn {
-    position: absolute; top: 8px; right: 8px;
-    background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.1rem;
-  }
-  .expense-item .del-btn:hover { color: var(--red); }
-  .add-btn {
-    width: 100%; padding: 10px; border: 2px dashed var(--blue);
-    border-radius: 10px; background: none; color: var(--blue);
-    font-size: 0.95rem; font-weight: 600; cursor: pointer;
-    transition: background 0.15s;
-  }
-  .add-btn:hover { background: rgba(26,115,232,0.06); }
-
-  /* TOTALS */
-  .totals-bar {
-    background: var(--blue);
-    color: #fff;
-    border-radius: var(--radius);
-    padding: 14px 16px;
-    margin-bottom: 14px;
-    box-shadow: var(--shadow);
-  }
-  .totals-bar .label { font-size: 0.8rem; opacity: 0.85; }
-  .totals-bar .amount { font-size: 1.5rem; font-weight: 700; }
-  .totals-bar .owed { font-size: 1.1rem; font-weight: 700; margin-top: 6px; }
-
-  /* SUBMIT TAB */
-  .action-btn {
-    width: 100%; padding: 13px; border: none; border-radius: 11px;
-    font-size: 1rem; font-weight: 700; cursor: pointer;
-    margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: opacity 0.15s, transform 0.1s;
-  }
-  .action-btn:active { transform: scale(0.98); opacity: 0.85; }
+  .expense-item { background: var(--bg); border-radius: 10px; padding: 12px; margin-bottom: 8px; border: 1.5px solid var(--border); position: relative; }
+  .del-btn { position: absolute; top: 8px; right: 8px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.1rem; }
+  .del-btn:hover { color: var(--red); }
+  .add-btn { width: 100%; padding: 10px; border: 2px dashed var(--blue); border-radius: 10px; background: none; color: var(--blue); font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+  .totals-bar { background: var(--blue); color: #fff; border-radius: var(--radius); padding: 14px 16px; margin-bottom: 14px; box-shadow: var(--shadow); }
+  .t-label { font-size: 0.8rem; opacity: 0.85; }
+  .t-amount { font-size: 1.5rem; font-weight: 700; }
+  .t-owed { font-size: 1.1rem; font-weight: 700; margin-top: 6px; }
+  .action-btn { width: 100%; padding: 13px; border: none; border-radius: 11px; font-size: 1rem; font-weight: 700; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .btn-blue { background: var(--blue); color: #fff; }
   .btn-green { background: var(--green); color: #fff; }
   .btn-gray { background: var(--border); color: var(--text); }
   .btn-red { background: var(--red); color: #fff; }
-
-  /* MODAL */
-  .modal-backdrop {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.45); z-index: 500;
-    align-items: flex-end; justify-content: center;
-  }
+  .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 500; align-items: flex-end; justify-content: center; }
   .modal-backdrop.open { display: flex; }
-  .modal {
-    background: var(--card); border-radius: 20px 20px 0 0;
-    padding: 20px; width: 100%; max-width: 520px;
-    max-height: 80vh; overflow-y: auto;
-    box-shadow: 0 -4px 24px rgba(0,0,0,0.18);
-  }
+  .modal { background: var(--card); border-radius: 20px 20px 0 0; padding: 20px; width: 100%; max-width: 520px; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: 0 -4px 24px rgba(0,0,0,0.18); }
   .modal h2 { font-size: 1.1rem; margin-bottom: 14px; }
-  .modal-close {
-    position: absolute; top: 14px; right: 16px;
-    background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--muted);
-  }
-  .modal { position: relative; }
-
-  /* SAVED REPORTS */
-  .report-item {
-    background: var(--bg);
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 8px;
-    border: 1.5px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .report-item .meta { font-size: 0.8rem; color: var(--muted); }
-  .report-item .load-btn {
-    background: var(--blue); color: #fff; border: none;
-    border-radius: 7px; padding: 6px 12px; font-size: 0.82rem; cursor: pointer;
-  }
-
-  /* TOAST */
-  .toast {
-    position: fixed; bottom: calc(var(--tab-h) + 12px); left: 50%; transform: translateX(-50%) translateY(0);
-    background: #222; color: #fff; padding: 10px 20px; border-radius: 20px;
-    font-size: 0.88rem; z-index: 1000; opacity: 0; pointer-events: none;
-    transition: opacity 0.25s;
-  }
+  .modal-close { position: absolute; top: 14px; right: 16px; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--muted); }
+  .report-item { background: var(--bg); border-radius: 10px; padding: 12px; margin-bottom: 8px; border: 1.5px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .report-meta { font-size: 0.8rem; color: var(--muted); }
+  .load-btn { background: var(--blue); color: #fff; border: none; border-radius: 7px; padding: 6px 12px; font-size: 0.82rem; cursor: pointer; }
+  .toast { position: fixed; bottom: calc(var(--tab-h) + 12px); left: 50%; transform: translateX(-50%); background: #222; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 0.88rem; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
   .toast.show { opacity: 1; }
-
   .divider { height: 1px; background: var(--border); margin: 10px 0; }
-  .text-center { text-align: center; }
   .text-muted { color: var(--muted); font-size: 0.85rem; }
-  .fw-bold { font-weight: 700; }
-
-  /* Receipt scan placeholder */
-  .scan-area {
-    border: 2px dashed var(--border); border-radius: 10px;
-    padding: 20px; text-align: center; color: var(--muted);
-    cursor: pointer; font-size: 0.9rem;
-  }
+  .receipt-btn { margin-top: 8px; width: 100%; padding: 8px; border: 1.5px solid var(--blue); border-radius: 9px; background: none; color: var(--blue); font-size: 0.88rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .receipt-btn.has-photo { border-color: var(--green); color: var(--green); background: #f0fdf4; }
+  .receipt-thumb { width: 100%; max-height: 130px; object-fit: cover; border-radius: 8px; margin-top: 8px; border: 1.5px solid var(--border); cursor: pointer; display: block; }
+  #camera-video { width: 100%; border-radius: 10px; background: #000; display: block; }
+  #snap-canvas { display: none; }
+  .camera-controls { display: flex; gap: 8px; margin-top: 10px; }
+  .camera-controls .action-btn { flex: 1; margin: 0; }
+  .receipt-full-img { width: 100%; border-radius: 10px; margin-bottom: 12px; }
 </style>
 </head>
 <body>
@@ -216,113 +80,80 @@
 <div class="app-header">
   <div class="header-row">
     <div style="width:44px"></div>
-    <div>
-      <h1>Atlantic Veal</h1>
-      <div class="subtitle">Expense Report</div>
-    </div>
-    <button class="adv-btn" onclick="openModal('advModal')">⚙ Advanced</button>
+    <div><h1>Atlantic Veal</h1><div class="subtitle">Expense Report</div></div>
+    <button class="adv-btn" onclick="openModal('advModal')">&#9881; Advanced</button>
   </div>
 </div>
 
-<!-- TAB PANELS -->
 <div id="panel-report" class="panel active">
-
-  <!-- Employee Info -->
   <div class="card">
-    <div class="card-title">👤 Employee Info</div>
+    <div class="card-title">&#128100; Employee Info</div>
     <div class="field"><label>Name *</label><input id="tech-name" type="text" placeholder="Full name"></div>
     <div class="field"><label>Department *</label><input id="department" type="text" placeholder="e.g. Operations"></div>
     <div class="field"><label>Job Title *</label><input id="job-title" type="text" placeholder="e.g. Floor Supervisor"></div>
-    <div class="field"><label>Email</label><input id="email" type="email" placeholder="your@email.com"></div>
+    <div class="field"><label>Email</label><input id="emp-email" type="email" placeholder="your@email.com"></div>
   </div>
-
-
-
-  <!-- Mileage -->
   <div class="card">
-    <div class="card-title">🚗 Mileage</div>
+    <div class="card-title">&#128663; Mileage</div>
     <div class="row2">
       <div class="field"><label>Miles Driven</label><input id="miles" type="number" min="0" placeholder="0" oninput="calcMileage()"></div>
       <div class="field"><label>Rate / Mile ($)</label><input id="rate" type="number" step="0.01" placeholder="0.67" oninput="calcMileage()"></div>
     </div>
     <div class="field"><label>Mileage Total</label><input id="mileage-total" class="readonly" readonly placeholder="$0.00"></div>
   </div>
-
 </div>
 
 <div id="panel-expenses" class="panel">
-
-  <!-- Expenses list -->
+  <div class="totals-bar">
+    <div class="t-label">This Report</div>
+    <div class="t-amount" id="total-expenses">$0.00</div>
+    <div class="t-label" style="margin-top:4px">Total Expenses Due</div>
+    <div class="t-owed" id="total-owed">$0.00 Owed</div>
+  </div>
   <div class="card">
-    <div class="card-title">🧾 Expenses</div>
+    <div class="card-title">&#129534; Expenses</div>
     <div id="expense-list"></div>
-    <button class="add-btn" onclick="addExpense()">＋ Add Expense</button>
+    <button class="add-btn" onclick="addExpense()">+ Add Expense</button>
   </div>
-
-  <!-- Totals -->
-  <div class="totals-bar" id="totals-bar">
-    <div class="label">This Report</div>
-    <div class="amount" id="total-expenses">$0.00</div>
-    <div class="label" style="margin-top:4px">Total Expenses Due</div>
-    <div class="owed" id="total-owed">$0.00 Owed</div>
-  </div>
-
-  <!-- Advances -->
   <div class="card">
-    <div class="card-title">💵 Advances</div>
+    <div class="card-title">&#128181; Advances</div>
     <div class="row2">
       <div class="field"><label>Cash Advance ($)</label><input id="cash-advance" type="number" min="0" step="0.01" placeholder="0.00" oninput="calcTotals()"></div>
       <div class="field"><label>Other Advance ($)</label><input id="other-advance" type="number" min="0" step="0.01" placeholder="0.00" oninput="calcTotals()"></div>
     </div>
   </div>
-
 </div>
 
 <div id="panel-submit" class="panel">
-
   <div class="card">
-    <div class="card-title">💾 Save</div>
-    <button class="action-btn btn-blue" onclick="saveReport()">💾 Save Report</button>
+    <div class="card-title">&#128190; Save</div>
+    <button class="action-btn btn-blue" onclick="saveReport()">&#128190; Save Report</button>
   </div>
-
   <div class="card">
-    <div class="card-title">📄 Export</div>
-    <button class="action-btn btn-green" onclick="exportPDF()">📄 Export PDF</button>
-    <button class="action-btn btn-gray" onclick="openModal('loadModal')">📂 Load Report</button>
-    <button class="action-btn btn-red" onclick="clearAll()">🔄 Clear All</button>
+    <div class="card-title">&#128196; Export</div>
+    <button class="action-btn btn-green" onclick="exportPDF()">&#128196; Export PDF</button>
+    <button class="action-btn btn-gray" onclick="openModal('loadModal')">&#128194; Load Report</button>
+    <button class="action-btn btn-red" onclick="clearAll()">&#128260; Clear All</button>
   </div>
-
   <div class="card">
-    <div class="card-title">✉️ Email Reports</div>
-    <button class="action-btn btn-gray" onclick="openModal('emailModal')">✉️ Email Reports…</button>
+    <div class="card-title">&#9993; Email Reports</div>
+    <button class="action-btn btn-gray" onclick="openModal('emailModal')">&#9993; Email Reports&hellip;</button>
   </div>
-
-  <p class="text-center text-muted" style="margin-top:8px">App developed by Dalton Shaw</p>
+  <p style="text-align:center;color:var(--muted);font-size:0.85rem;margin-top:8px">App developed by Dalton Shaw</p>
 </div>
 
-<!-- TAB BAR -->
 <div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('report',this)">
-    <span class="icon">📋</span>Report
-  </button>
-  <button class="tab-btn" onclick="switchTab('expenses',this)">
-    <span class="icon">🧾</span>Expenses
-  </button>
-  <button class="tab-btn" onclick="switchTab('submit',this)">
-    <span class="icon">✅</span>Submit
-  </button>
+  <button class="tab-btn active" onclick="switchTab('report',this)"><span class="icon">&#128203;</span>Report</button>
+  <button class="tab-btn" onclick="switchTab('expenses',this)"><span class="icon">&#129534;</span>Expenses</button>
+  <button class="tab-btn" onclick="switchTab('submit',this)"><span class="icon">&#10003;</span>Submit</button>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- ADVANCED MODAL -->
 <div class="modal-backdrop" id="advModal">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('advModal')">×</button>
-    <h2>⚙ Advanced</h2>
-    <div class="card-title">☁ GitHub Gist Sync</div>
-    <p class="text-muted" style="margin-bottom:10px">Sync reports across devices using GitHub Gist.</p>
+    <button class="modal-close" onclick="closeModal('advModal')">&#215;</button>
+    <h2>Advanced Settings</h2>
     <div class="field"><label>GitHub Personal Access Token</label><input id="gh-token" type="password" placeholder="ghp_..."></div>
     <div class="field"><label>Gist ID</label><input id="gist-id" type="text" placeholder="Leave blank on first device"></div>
     <button class="action-btn btn-blue" onclick="closeModal('advModal');showToast('Settings saved')">Save &amp; Connect</button>
@@ -330,132 +161,239 @@
   </div>
 </div>
 
-<!-- LOAD MODAL -->
 <div class="modal-backdrop" id="loadModal">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('loadModal')">×</button>
-    <h2>📂 Load Report</h2>
+    <button class="modal-close" onclick="closeModal('loadModal')">&#215;</button>
+    <h2>Load Report</h2>
     <div id="saved-reports-list"></div>
     <div class="divider"></div>
     <button class="action-btn btn-gray" onclick="closeModal('loadModal')">Close</button>
   </div>
 </div>
 
-<!-- EMAIL MODAL -->
 <div class="modal-backdrop" id="emailModal">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('emailModal')">×</button>
-    <h2>✉️ Email Reports</h2>
-    <p class="text-muted" style="margin-bottom:12px">On mobile, tapping Send opens the native share sheet — pick Mail, Messages, or any app to attach PDFs directly.<br><br>On desktop, PDFs download and your mail app opens with the subject pre-filled.</p>
+    <button class="modal-close" onclick="closeModal('emailModal')">&#215;</button>
+    <h2>Email Reports</h2>
+    <p class="text-muted" style="margin-bottom:12px">On mobile, tapping Send opens the native share sheet. On desktop, your mail app opens with the subject pre-filled.</p>
     <div id="email-reports-list"></div>
     <div class="divider"></div>
     <div style="display:flex;gap:8px;margin-bottom:10px">
       <button class="action-btn btn-gray" style="flex:1;margin:0" onclick="selectAllReports(true)">Select All</button>
       <button class="action-btn btn-gray" style="flex:1;margin:0" onclick="selectAllReports(false)">None</button>
     </div>
-    <button class="action-btn btn-blue" onclick="sendSelectedReports()">✉️ Send Selected</button>
+    <button class="action-btn btn-blue" onclick="sendSelectedReports()">Send Selected</button>
     <button class="action-btn btn-gray" onclick="closeModal('emailModal')">Cancel</button>
   </div>
 </div>
 
-<script>
-// ── STATE ──────────────────────────────────────────────────
-let expenses = [];
-let savedReports = JSON.parse(localStorage.getItem('av_reports') || '[]');
+<div class="modal-backdrop" id="cameraModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeCamera()">&#215;</button>
+    <h2>&#128247; Add Receipt</h2>
+    <video id="camera-video" autoplay playsinline></video>
+    <canvas id="snap-canvas"></canvas>
+    <div class="camera-controls">
+      <button class="action-btn btn-blue" onclick="snapPhoto()">Take Photo</button>
+      <button class="action-btn btn-gray" onclick="closeCamera()">Cancel</button>
+    </div>
+    <div class="divider"></div>
+    <p class="text-muted" style="text-align:center;margin-bottom:8px">Or upload from your device</p>
+    <input type="file" id="receipt-file-input" accept="image/*" style="display:none" onchange="handleFileUpload(event)">
+    <button class="action-btn btn-gray" onclick="document.getElementById('receipt-file-input').click()">Choose from Library</button>
+  </div>
+</div>
 
-// ── TABS ──────────────────────────────────────────────────
+<div class="modal-backdrop" id="viewReceiptModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('viewReceiptModal')">&#215;</button>
+    <h2>Receipt</h2>
+    <img id="receipt-view-img" class="receipt-full-img" src="" alt="Receipt">
+    <button class="action-btn btn-red" onclick="removeReceipt()">Remove Photo</button>
+    <button class="action-btn btn-gray" onclick="closeModal('viewReceiptModal')">Close</button>
+  </div>
+</div>
+
+<script>
+var expenses = [];
+var savedReports = JSON.parse(localStorage.getItem('av_reports') || '[]');
+var currentReceiptId = null;
+var cameraStream = null;
+
 function switchTab(name, btn) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
   document.getElementById('panel-' + name).classList.add('active');
   btn.classList.add('active');
 }
 
-// ── MILEAGE ───────────────────────────────────────────────
 function calcMileage() {
-  const miles = parseFloat(document.getElementById('miles').value) || 0;
-  const rate  = parseFloat(document.getElementById('rate').value) || 0;
+  var miles = parseFloat(document.getElementById('miles').value) || 0;
+  var rate  = parseFloat(document.getElementById('rate').value) || 0;
   document.getElementById('mileage-total').value = '$' + (miles * rate).toFixed(2);
   calcTotals();
 }
 
-// ── EXPENSES ──────────────────────────────────────────────
-const CATEGORIES = ['Meals','Hotel','Airfare','Rental Car','Parking','Tolls','Supplies','Other'];
+var CATEGORIES = ['Meals','Hotel','Airfare','Rental Car','Parking','Tolls','Supplies','Other'];
 
 function addExpense(data) {
-  const id = Date.now() + Math.random();
-  expenses.push({ id, category: data?.category||'', amount: data?.amount||'', description: data?.description||'', receipt: data?.receipt||'' });
+  expenses.push({
+    id: Date.now() + Math.random(),
+    category: (data && data.category) || '',
+    amount: (data && data.amount) || '',
+    date: (data && data.date) || '',
+    description: (data && data.description) || '',
+    receipt: (data && data.receipt) || ''
+  });
   renderExpenses();
 }
 
 function removeExpense(id) {
-  expenses = expenses.filter(e => e.id !== id);
+  expenses = expenses.filter(function(e) { return e.id !== id; });
   renderExpenses();
   calcTotals();
 }
 
 function renderExpenses() {
-  const list = document.getElementById('expense-list');
+  var list = document.getElementById('expense-list');
   list.innerHTML = '';
-  expenses.forEach(exp => {
-    const div = document.createElement('div');
+  expenses.forEach(function(exp) {
+    var div = document.createElement('div');
     div.className = 'expense-item';
-    div.innerHTML = `
-      <button class="del-btn" onclick="removeExpense(${exp.id})">🗑</button>
-      <div class="row2">
-        <div class="field">
-          <label>Category</label>
-          <select onchange="updateExpense(${exp.id},'category',this.value)">
-            <option value="">Select…</option>
-            ${CATEGORIES.map(c=>`<option value="${c}" ${exp.category===c?'selected':''}>${c}</option>`).join('')}
-          </select>
-        </div>
-        <div class="field">
-          <label>Amount ($)</label>
-          <input type="number" step="0.01" min="0" placeholder="0.00" value="${exp.amount}"
-            oninput="updateExpense(${exp.id},'amount',this.value)">
-        </div>
-      </div>
-      <div class="field">
-        <label>Description</label>
-        <input type="text" placeholder="Optional note" value="${exp.description}"
-          oninput="updateExpense(${exp.id},'description',this.value)">
-      </div>
-    `;
+    var opts = CATEGORIES.map(function(c) {
+      return '<option value="' + c + '"' + (exp.category === c ? ' selected' : '') + '>' + c + '</option>';
+    }).join('');
+    var html = '<button class="del-btn" onclick="removeExpense(' + exp.id + ')">&#128465;</button>';
+    html += '<div class="row2">';
+    html += '<div class="field"><label>Category</label><select onchange="updateExpense(' + exp.id + ',\'category\',this.value)"><option value="">Select...</option>' + opts + '</select></div>';
+    html += '<div class="field"><label>Amount ($)</label><input type="number" step="0.01" min="0" placeholder="0.00" value="' + (exp.amount || '') + '" oninput="updateExpense(' + exp.id + ',\'amount\',this.value)"></div>';
+    html += '</div>';
+    html += '<div class="row2">';
+    html += '<div class="field"><label>Date</label><input type="date" value="' + (exp.date || '') + '" onchange="updateExpense(' + exp.id + ',\'date\',this.value)"></div>';
+    html += '<div class="field"><label>Description</label><input type="text" placeholder="Optional note" value="' + (exp.description || '') + '" oninput="updateExpense(' + exp.id + ',\'description\',this.value)"></div>';
+    html += '</div>';
+    if (exp.receipt) {
+      html += '<button class="receipt-btn has-photo" onclick="openCamera(' + exp.id + ')">&#128247; Receipt attached &mdash; tap to change</button>';
+      html += '<img class="receipt-thumb" src="' + exp.receipt + '" onclick="viewReceipt(' + exp.id + ')" alt="Receipt">';
+    } else {
+      html += '<button class="receipt-btn" onclick="openCamera(' + exp.id + ')">&#128247; Add Receipt Photo</button>';
+    }
+    div.innerHTML = html;
     list.appendChild(div);
   });
   calcTotals();
 }
 
 function updateExpense(id, field, val) {
-  const exp = expenses.find(e => e.id === id);
-  if (exp) exp[field] = val;
-  calcTotals();
+  var exp = expenses.find(function(e) { return e.id === id; });
+  if (exp) { exp[field] = val; }
+  if (field === 'amount') calcTotals();
 }
 
-// ── TOTALS ────────────────────────────────────────────────
 function calcTotals() {
-  const miles  = parseFloat(document.getElementById('miles').value) || 0;
-  const rate   = parseFloat(document.getElementById('rate').value) || 0;
-  const mileage = miles * rate;
-  const expTotal = expenses.reduce((s,e) => s + (parseFloat(e.amount)||0), 0);
-  const cash  = parseFloat(document.getElementById('cash-advance').value) || 0;
-  const other = parseFloat(document.getElementById('other-advance').value) || 0;
-  const total = mileage + expTotal;
-  const owed  = total - cash - other;
+  var miles   = parseFloat(document.getElementById('miles').value) || 0;
+  var rate    = parseFloat(document.getElementById('rate').value) || 0;
+  var mileage = miles * rate;
+  var expTotal = expenses.reduce(function(s,e) { return s + (parseFloat(e.amount) || 0); }, 0);
+  var cash  = parseFloat(document.getElementById('cash-advance').value) || 0;
+  var other = parseFloat(document.getElementById('other-advance').value) || 0;
+  var total = mileage + expTotal;
+  var owed  = total - cash - other;
   document.getElementById('total-expenses').textContent = '$' + total.toFixed(2);
-  const owedEl = document.getElementById('total-owed');
-  owedEl.textContent = '$' + Math.abs(owed).toFixed(2) + (owed < 0 ? ' (Overpaid)' : ' Owed');
+  document.getElementById('total-owed').textContent = '$' + Math.abs(owed).toFixed(2) + (owed < 0 ? ' (Overpaid)' : ' Owed');
 }
 
-// ── SAVE/LOAD ─────────────────────────────────────────────
+function openCamera(expId) {
+  currentReceiptId = expId;
+  openModal('cameraModal');
+  var video = document.getElementById('camera-video');
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then(function(stream) { cameraStream = stream; video.srcObject = stream; video.style.display = 'block'; })
+      .catch(function() { video.style.display = 'none'; });
+  } else {
+    video.style.display = 'none';
+  }
+}
+
+function closeCamera() {
+  if (cameraStream) { cameraStream.getTracks().forEach(function(t) { t.stop(); }); cameraStream = null; }
+  var video = document.getElementById('camera-video');
+  video.srcObject = null;
+  closeModal('cameraModal');
+}
+
+function snapPhoto() {
+  var video = document.getElementById('camera-video');
+  var canvas = document.getElementById('snap-canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  attachReceipt(canvas.toDataURL('image/jpeg', 0.75));
+  closeCamera();
+}
+
+function handleFileUpload(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var maxW = 1200;
+      var scale = img.width > maxW ? maxW / img.width : 1;
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      attachReceipt(canvas.toDataURL('image/jpeg', 0.75));
+      closeCamera();
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+function attachReceipt(dataUrl) {
+  var exp = expenses.find(function(e) { return e.id === currentReceiptId; });
+  if (exp) { exp.receipt = dataUrl; renderExpenses(); showToast('Receipt saved!'); }
+}
+
+function viewReceipt(expId) {
+  currentReceiptId = expId;
+  var exp = expenses.find(function(e) { return e.id === expId; });
+  if (!exp || !exp.receipt) return;
+  document.getElementById('receipt-view-img').src = exp.receipt;
+  openModal('viewReceiptModal');
+}
+
+function removeReceipt() {
+  var exp = expenses.find(function(e) { return e.id === currentReceiptId; });
+  if (exp) { exp.receipt = ''; renderExpenses(); showToast('Receipt removed'); }
+  closeModal('viewReceiptModal');
+}
+
+function openModal(id) {
+  if (id === 'loadModal') renderSavedReports();
+  if (id === 'emailModal') renderEmailReports();
+  document.getElementById(id).classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+document.querySelectorAll('.modal-backdrop').forEach(function(bd) {
+  bd.addEventListener('click', function(e) { if (e.target === bd) bd.classList.remove('open'); });
+});
+
 function getFormData() {
   return {
     techName: document.getElementById('tech-name').value,
     department: document.getElementById('department').value,
     jobTitle: document.getElementById('job-title').value,
-    email: document.getElementById('email').value,
-    reportNum: ('Report-' + Date.now()),
+    email: document.getElementById('emp-email').value,
     miles: document.getElementById('miles').value,
     rate: document.getElementById('rate').value,
     cashAdvance: document.getElementById('cash-advance').value,
@@ -466,190 +404,179 @@ function getFormData() {
 }
 
 function saveReport() {
-  const data = getFormData();
-  const rn = data.reportNum || ('Report-' + Date.now());
-  const idx = savedReports.findIndex(r => r.reportNum === rn);
-  if (idx >= 0) savedReports[idx] = data;
-  else savedReports.push(data);
+  var data = getFormData();
+  var key = data.techName || ('Report-' + Date.now());
+  var idx = savedReports.findIndex(function(r) { return r.techName === key; });
+  if (idx >= 0) savedReports[idx] = data; else savedReports.push(data);
   localStorage.setItem('av_reports', JSON.stringify(savedReports));
-  showToast('✅ Report saved!');
+  showToast('Report saved!');
 }
-
-function openModal(id) {
-  if (id === 'loadModal') renderSavedReports();
-  if (id === 'emailModal') renderEmailReports();
-  document.getElementById(id).classList.add('open');
-}
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
 function renderSavedReports() {
-  const el = document.getElementById('saved-reports-list');
+  var el = document.getElementById('saved-reports-list');
   if (!savedReports.length) { el.innerHTML = '<p class="text-muted">No saved reports found.</p>'; return; }
-  el.innerHTML = savedReports.map((r,i) => `
-    <div class="report-item">
-      <div>
-        <div class="fw-bold">${r.techName || 'Untitled'}</div>
-        <div class="meta">${r.jobTitle||''} · ${r.department||''}</div>
-      </div>
-      <button class="load-btn" onclick="loadReport(${i})">Load</button>
-    </div>
-  `).join('');
+  el.innerHTML = savedReports.map(function(r,i) {
+    return '<div class="report-item"><div><div style="font-weight:700">' + (r.techName||'Untitled') + '</div><div class="report-meta">' + (r.jobTitle||'') + ' &middot; ' + (r.department||'') + '</div></div><button class="load-btn" onclick="loadReport(' + i + ')">Load</button></div>';
+  }).join('');
 }
 
 function loadReport(i) {
-  const r = savedReports[i];
-  document.getElementById('tech-name').value = r.techName||'';
-  document.getElementById('department').value = r.department||'';
-  document.getElementById('job-title').value = r.jobTitle||'';
-  document.getElementById('email').value = r.email||'';
-  document.getElementById('miles').value = r.miles||'';
-  document.getElementById('rate').value = r.rate||'';
-  document.getElementById('cash-advance').value = r.cashAdvance||'';
-  document.getElementById('other-advance').value = r.otherAdvance||'';
-  expenses = (r.expenses||[]).map(e => ({...e, id: Date.now() + Math.random()}));
+  var r = savedReports[i];
+  document.getElementById('tech-name').value = r.techName || '';
+  document.getElementById('department').value = r.department || '';
+  document.getElementById('job-title').value = r.jobTitle || '';
+  document.getElementById('emp-email').value = r.email || '';
+  document.getElementById('miles').value = r.miles || '';
+  document.getElementById('rate').value = r.rate || '';
+  document.getElementById('cash-advance').value = r.cashAdvance || '';
+  document.getElementById('other-advance').value = r.otherAdvance || '';
+  expenses = (r.expenses || []).map(function(e) { return Object.assign({}, e, { id: Date.now() + Math.random() }); });
   renderExpenses();
   calcMileage();
   closeModal('loadModal');
-  showToast('📂 Report loaded');
+  showToast('Report loaded');
 }
 
-// ── CLEAR ─────────────────────────────────────────────────
 function clearAll() {
   if (!confirm('Clear all fields and expenses?')) return;
-  ['tech-name','department','job-title','email','miles','rate','mileage-total','cash-advance','other-advance'].forEach(id => {
-    const el = document.getElementById(id);
-    el.value = '';
+  ['tech-name','department','job-title','emp-email','miles','rate','mileage-total','cash-advance','other-advance'].forEach(function(id) {
+    document.getElementById(id).value = '';
   });
   expenses = [];
   renderExpenses();
   calcTotals();
-  showToast('🔄 Cleared');
+  showToast('Cleared');
 }
 
-// ── PDF EXPORT ────────────────────────────────────────────
 function exportPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
-  const margin = 50;
-  let y = 60;
-  const lineH = 18;
-  const col2 = 320;
+  var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter' });
+  var margin = 50;
+  var y = 60;
+  var lh = 18;
 
-  // Header
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(20);
-  doc.setTextColor(26, 115, 232);
+  doc.setFont('helvetica','bold'); doc.setFontSize(20); doc.setTextColor(26,115,232);
   doc.text('Atlantic Veal', margin, y);
-  doc.setFontSize(13);
-  doc.setTextColor(80,80,80);
+  doc.setFontSize(13); doc.setTextColor(80,80,80);
   doc.text('Expense Report', margin, y + 20);
   y += 50;
 
-  doc.setDrawColor(200,200,200);
-  doc.line(margin, y, 560, y);
-  y += 18;
+  doc.setDrawColor(200,200,200); doc.line(margin, y, 560, y); y += 18;
+  doc.setFont('helvetica','normal'); doc.setFontSize(11); doc.setTextColor(40,40,40);
 
-  doc.setFont('helvetica','normal');
-  doc.setFontSize(11);
-  doc.setTextColor(40,40,40);
-
-  const fv = id => document.getElementById(id).value || '—';
-
-  const fields = [
-    ['Name', fv('tech-name')],
-    ['Department', fv('department')],
-    ['Job Title', fv('job-title')],
-    ['Email', fv('email') || '—'],
+  var fields = [
+    ['Name', document.getElementById('tech-name').value || '—'],
+    ['Department', document.getElementById('department').value || '—'],
+    ['Job Title', document.getElementById('job-title').value || '—'],
+    ['Email', document.getElementById('emp-email').value || '—']
   ];
-
-  fields.forEach(([label, val]) => {
-    doc.setFont('helvetica','bold'); doc.text(label + ':', margin, y);
-    doc.setFont('helvetica','normal'); doc.text(val, 200, y);
-    y += lineH;
+  fields.forEach(function(pair) {
+    doc.setFont('helvetica','bold'); doc.text(pair[0] + ':', margin, y);
+    doc.setFont('helvetica','normal'); doc.text(pair[1], 200, y);
+    y += lh;
   });
 
-  y += 10;
-  doc.line(margin, y, 560, y); y += 16;
+  y += 8; doc.line(margin, y, 560, y); y += 16;
 
-  // Mileage
-  const miles = parseFloat(document.getElementById('miles').value)||0;
-  const rate  = parseFloat(document.getElementById('rate').value)||0;
-  const mileage = miles * rate;
-  doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.text('Mileage', margin, y); y += lineH;
+  var miles   = parseFloat(document.getElementById('miles').value) || 0;
+  var rate    = parseFloat(document.getElementById('rate').value) || 0;
+  var mileage = miles * rate;
+  doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.text('Mileage', margin, y); y += lh;
   doc.setFont('helvetica','normal'); doc.setFontSize(11);
-  doc.text(`Miles: ${miles}   Rate: $${rate.toFixed(2)}/mi   Total: $${mileage.toFixed(2)}`, margin+10, y); y += lineH + 6;
+  doc.text('Miles: ' + miles + '   Rate: $' + rate.toFixed(2) + '/mi   Total: $' + mileage.toFixed(2), margin+10, y); y += lh + 6;
 
-  // Expenses
-  doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.text('Expenses', margin, y); y += lineH;
+  doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.text('Expenses', margin, y); y += lh;
   doc.setFont('helvetica','normal'); doc.setFontSize(10);
-  expenses.forEach((e,i) => {
-    doc.text(`${i+1}. ${e.category||'—'}${e.description?' — '+e.description:''}`, margin+10, y);
-    doc.text('$'+(parseFloat(e.amount)||0).toFixed(2), 510, y, {align:'right'});
-    y += lineH;
+  expenses.forEach(function(e, i) {
+    var dateStr = e.date ? '  [' + e.date + ']' : '';
+    var desc = (e.description ? ' — ' + e.description : '') + dateStr;
+    doc.text((i+1) + '. ' + (e.category||'—') + desc, margin+10, y);
+    doc.text('$' + (parseFloat(e.amount)||0).toFixed(2), 510, y, { align: 'right' });
+    y += lh;
   });
 
   y += 6; doc.line(margin, y, 560, y); y += 14;
 
-  const expTotal = expenses.reduce((s,e) => s + (parseFloat(e.amount)||0), 0);
-  const cash   = parseFloat(document.getElementById('cash-advance').value)||0;
-  const other  = parseFloat(document.getElementById('other-advance').value)||0;
-  const total  = mileage + expTotal;
-  const owed   = total - cash - other;
+  var expTotal = expenses.reduce(function(s,e) { return s + (parseFloat(e.amount)||0); }, 0);
+  var cash  = parseFloat(document.getElementById('cash-advance').value) || 0;
+  var other = parseFloat(document.getElementById('other-advance').value) || 0;
+  var total = mileage + expTotal;
+  var owed  = total - cash - other;
 
   doc.setFont('helvetica','bold'); doc.setFontSize(11);
-  doc.text('Total Expenses:', margin, y); doc.text('$'+total.toFixed(2), 510, y, {align:'right'}); y += lineH;
-  if (cash) { doc.text('Cash Advance:', margin, y); doc.text('-$'+cash.toFixed(2), 510, y, {align:'right'}); y += lineH; }
-  if (other) { doc.text('Other Advance:', margin, y); doc.text('-$'+other.toFixed(2), 510, y, {align:'right'}); y += lineH; }
-
+  doc.text('Total Expenses:', margin, y); doc.text('$' + total.toFixed(2), 510, y, { align:'right' }); y += lh;
+  if (cash)  { doc.text('Cash Advance:',  margin, y); doc.text('-$' + cash.toFixed(2),  510, y, { align:'right' }); y += lh; }
+  if (other) { doc.text('Other Advance:', margin, y); doc.text('-$' + other.toFixed(2), 510, y, { align:'right' }); y += lh; }
   y += 4; doc.line(margin, y, 560, y); y += 14;
   doc.setFontSize(13);
   doc.setTextColor(owed < 0 ? 220 : 22, owed < 0 ? 38 : 163, owed < 0 ? 38 : 74);
   doc.text((owed < 0 ? 'Overpaid: $' : 'Total Owed: $') + Math.abs(owed).toFixed(2), margin, y);
 
-  const empName = (document.getElementById('tech-name').value || 'expense-report').replace(/\s+/g,'-').toLowerCase();
-  doc.save(`atlantic-veal-${empName}.pdf`);
-  showToast('📄 PDF exported!');
+  // Receipt images — one full page per receipt
+  expenses.filter(function(e) { return e.receipt; }).forEach(function(e) {
+    doc.addPage();
+    var ry = 50;
+    doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(40,40,40);
+    var header = 'Receipt: ' + (e.category||'Expense') + '   $' + (parseFloat(e.amount)||0).toFixed(2);
+    if (e.date) header += '   ' + e.date;
+    doc.text(header, margin, ry); ry += 20;
+    if (e.description) {
+      doc.setFont('helvetica','normal'); doc.setFontSize(10);
+      doc.text(e.description, margin, ry); ry += 16;
+    }
+    doc.setDrawColor(200,200,200); doc.line(margin, ry, 560, ry); ry += 16;
+    // Embed image — strip data URL prefix and detect format
+    try {
+      var imgData = e.receipt;
+      var fmt = 'JPEG';
+      if (imgData.indexOf('data:image/png') === 0) fmt = 'PNG';
+      var pageW = doc.internal.pageSize.getWidth();
+      var pageH = doc.internal.pageSize.getHeight();
+      var maxW = pageW - margin * 2;
+      var maxH = pageH - ry - 30;
+      var props = doc.getImageProperties(imgData);
+      var iw = props.width;
+      var ih = props.height;
+      var scale = Math.min(maxW / iw, maxH / ih, 1);
+      iw = iw * scale;
+      ih = ih * scale;
+      doc.addImage(imgData, fmt, margin, ry, iw, ih);
+    } catch(err) {
+      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(150,150,150);
+      doc.text('(Image could not be embedded)', margin, ry);
+    }
+  });
+
+  var empName = (document.getElementById('tech-name').value || 'expense-report').replace(/\s+/g,'-').toLowerCase();
+  doc.save('atlantic-veal-' + empName + '.pdf');
+  showToast('PDF exported!');
 }
 
-// ── EMAIL ─────────────────────────────────────────────────
 function renderEmailReports() {
-  const el = document.getElementById('email-reports-list');
+  var el = document.getElementById('email-reports-list');
   if (!savedReports.length) { el.innerHTML = '<p class="text-muted">No saved reports yet.</p>'; return; }
-  el.innerHTML = savedReports.map((r,i) => `
-    <label style="display:flex;align-items:center;gap:10px;margin-bottom:8px;cursor:pointer">
-      <input type="checkbox" data-idx="${i}">
-      <span><b>${r.reportNum||'Untitled'}</b> · ${r.customer||''}</span>
-    </label>
-  `).join('');
+  el.innerHTML = savedReports.map(function(r,i) {
+    return '<label style="display:flex;align-items:center;gap:10px;margin-bottom:8px;cursor:pointer"><input type="checkbox" data-idx="' + i + '"><span><b>' + (r.techName||'Untitled') + '</b> &middot; ' + (r.department||'') + '</span></label>';
+  }).join('');
 }
 
 function selectAllReports(val) {
-  document.querySelectorAll('#email-reports-list input[type=checkbox]').forEach(cb => cb.checked = val);
+  document.querySelectorAll('#email-reports-list input[type=checkbox]').forEach(function(cb) { cb.checked = val; });
 }
 
 function sendSelectedReports() {
-  const selected = [...document.querySelectorAll('#email-reports-list input[type=checkbox]:checked')];
+  var selected = Array.from(document.querySelectorAll('#email-reports-list input[type=checkbox]:checked'));
   if (!selected.length) { showToast('No reports selected'); return; }
-  const names = selected.map(cb => savedReports[+cb.dataset.idx]?.reportNum || 'Report').join(', ');
-  const subject = encodeURIComponent('Atlantic Veal Expense Reports: ' + names);
-  window.location.href = `mailto:?subject=${subject}&body=${encodeURIComponent('Please find the attached expense reports: '+names)}`;
+  var names = selected.map(function(cb) { return (savedReports[+cb.dataset.idx] || {}).techName || 'Report'; }).join(', ');
+  window.location.href = 'mailto:?subject=' + encodeURIComponent('Atlantic Veal Expense Reports: ' + names) + '&body=' + encodeURIComponent('Please find the attached expense reports: ' + names);
   closeModal('emailModal');
 }
 
-// ── TOAST ─────────────────────────────────────────────────
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2200);
 }
 
-// Close modals on backdrop click
-document.querySelectorAll('.modal-backdrop').forEach(bd => {
-  bd.addEventListener('click', e => { if (e.target === bd) bd.classList.remove('open'); });
-});
-
-// Init
 renderExpenses();
 calcTotals();
 </script>
