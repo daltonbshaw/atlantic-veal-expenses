@@ -39,7 +39,7 @@
   .field input, .field select { width: 100%; border: 1.5px solid var(--border); border-radius: 9px; padding: 9px 12px; font-size: 0.95rem; background: var(--bg); color: var(--text); outline: none; font-family: inherit; transition: border 0.15s; }
   .field input:focus, .field select:focus { border-color: var(--blue); background: #fff; }
   .readonly { background: #f0f3fa !important; color: var(--muted) !important; }
-  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .expense-item { background: var(--bg); border-radius: 10px; padding: 12px; margin-bottom: 8px; border: 1.5px solid var(--border); position: relative; }
   .del-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.2rem; padding: 2px 4px; }
   .del-btn:hover { color: var(--red); }
@@ -227,10 +227,13 @@ function switchTab(name, btn) {
   btn.classList.add('active');
 }
 
+var mileageTotal = 0;
+
 function calcMileage() {
   var miles = parseFloat(document.getElementById('miles').value) || 0;
   var rate  = parseFloat(document.getElementById('rate').value) || 0;
-  document.getElementById('mileage-total').value = '$' + (miles * rate).toFixed(2);
+  mileageTotal = miles * rate;
+  document.getElementById('mileage-total').value = '$' + mileageTotal.toFixed(2);
   calcTotals();
 }
 
@@ -294,13 +297,10 @@ function updateExpense(id, field, val) {
 }
 
 function calcTotals() {
-  var miles   = parseFloat(document.getElementById('miles').value) || 0;
-  var rate    = parseFloat(document.getElementById('rate').value) || 0;
-  var mileage = miles * rate;
   var expTotal = expenses.reduce(function(s,e) { return s + (parseFloat(e.amount) || 0); }, 0);
   var cash  = parseFloat(document.getElementById('cash-advance').value) || 0;
   var other = parseFloat(document.getElementById('other-advance').value) || 0;
-  var total = mileage + expTotal;
+  var total = mileageTotal + expTotal;
   var owed  = total - cash - other;
   document.getElementById('total-expenses').textContent = '$' + total.toFixed(2);
   document.getElementById('total-owed').textContent = '$' + Math.abs(owed).toFixed(2) + (owed < 0 ? ' (Overpaid)' : ' Owed');
@@ -431,6 +431,8 @@ function loadReport(i) {
   document.getElementById('emp-email').value = r.email || '';
   document.getElementById('miles').value = r.miles || '';
   document.getElementById('rate').value = r.rate || '';
+  mileageTotal = (parseFloat(r.miles) || 0) * (parseFloat(r.rate) || 0);
+  document.getElementById('mileage-total').value = mileageTotal ? '$' + mileageTotal.toFixed(2) : '';
   document.getElementById('cash-advance').value = r.cashAdvance || '';
   document.getElementById('other-advance').value = r.otherAdvance || '';
   expenses = (r.expenses || []).map(function(e) { return Object.assign({}, e, { id: Date.now() + Math.random() }); });
@@ -482,7 +484,7 @@ function exportPDF() {
 
   var miles   = parseFloat(document.getElementById('miles').value) || 0;
   var rate    = parseFloat(document.getElementById('rate').value) || 0;
-  var mileage = miles * rate;
+  var mileage = mileageTotal;
   doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.text('Mileage', margin, y); y += lh;
   doc.setFont('helvetica','normal'); doc.setFontSize(11);
   doc.text('Miles: ' + miles + '   Rate: $' + rate.toFixed(2) + '/mi   Total: $' + mileage.toFixed(2), margin+10, y); y += lh + 6;
