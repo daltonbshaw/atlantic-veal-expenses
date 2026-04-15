@@ -231,10 +231,7 @@
   <div class="card">
     <div class="card-title">👤 Employee Info</div>
     <div class="field"><label>Name *</label><input id="tech-name" type="text" placeholder="Full name"></div>
-    <div class="row2">
-      <div class="field"><label>Department *</label><input id="department" type="text" placeholder="e.g. Operations"></div>
-      <div class="field"><label>Employee ID *</label><input id="employee-id" type="text" placeholder="e.g. 10042"></div>
-    </div>
+    <div class="field"><label>Department *</label><input id="department" type="text" placeholder="e.g. Operations"></div>
     <div class="field"><label>Job Title *</label><input id="job-title" type="text" placeholder="e.g. Floor Supervisor"></div>
     <div class="field"><label>Email</label><input id="email" type="email" placeholder="your@email.com"></div>
   </div>
@@ -456,7 +453,6 @@ function getFormData() {
   return {
     techName: document.getElementById('tech-name').value,
     department: document.getElementById('department').value,
-    employeeId: document.getElementById('employee-id').value,
     jobTitle: document.getElementById('job-title').value,
     email: document.getElementById('email').value,
     reportNum: ('Report-' + Date.now()),
@@ -504,7 +500,6 @@ function loadReport(i) {
   const r = savedReports[i];
   document.getElementById('tech-name').value = r.techName||'';
   document.getElementById('department').value = r.department||'';
-  document.getElementById('employee-id').value = r.employeeId||'';
   document.getElementById('job-title').value = r.jobTitle||'';
   document.getElementById('email').value = r.email||'';
   document.getElementById('miles').value = r.miles||'';
@@ -521,7 +516,7 @@ function loadReport(i) {
 // ── CLEAR ─────────────────────────────────────────────────
 function clearAll() {
   if (!confirm('Clear all fields and expenses?')) return;
-  ['tech-name','department','employee-id','job-title','email','miles','rate','mileage-total','cash-advance','other-advance'].forEach(id => {
+  ['tech-name','department','job-title','email','miles','rate','mileage-total','cash-advance','other-advance'].forEach(id => {
     const el = document.getElementById(id);
     el.value = '';
   });
@@ -563,7 +558,6 @@ function exportPDF() {
   const fields = [
     ['Name', fv('tech-name')],
     ['Department', fv('department')],
-    ['Employee ID', fv('employee-id')],
     ['Job Title', fv('job-title')],
     ['Email', fv('email') || '—'],
   ];
