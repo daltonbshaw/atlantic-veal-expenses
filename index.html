@@ -235,6 +235,7 @@ function calcMileage() {
   mileageTotal = miles * rate;
   document.getElementById('mileage-total').value = '$' + mileageTotal.toFixed(2);
   calcTotals();
+  saveDraft();
 }
 
 var CATEGORIES = ['Meals','Hotel','Airfare','Rental Car','Parking','Tolls','Supplies','Other'];
@@ -255,6 +256,7 @@ function removeExpense(id) {
   expenses = expenses.filter(function(e) { return e.id !== id; });
   renderExpenses();
   calcTotals();
+  saveDraft();
 }
 
 function renderExpenses() {
@@ -288,12 +290,14 @@ function renderExpenses() {
     list.appendChild(div);
   });
   calcTotals();
+  saveDraft();
 }
 
 function updateExpense(id, field, val) {
   var exp = expenses.find(function(e) { return e.id === id; });
   if (exp) { exp[field] = val; }
   if (field === 'amount') calcTotals();
+  saveDraft();
 }
 
 function calcTotals() {
@@ -391,8 +395,11 @@ document.querySelectorAll('.modal-backdrop').forEach(function(bd) {
   bd.addEventListener('click', function(e) { if (e.target === bd) bd.classList.remove('open'); });
 });
 
+var currentReportId = null;
+
 function getFormData() {
   return {
+    id: currentReportId,
     techName: document.getElementById('tech-name').value,
     department: document.getElementById('department').value,
     jobTitle: document.getElementById('job-title').value,
@@ -408,23 +415,31 @@ function getFormData() {
 
 function saveReport() {
   var data = getFormData();
-  var key = data.techName || ('Report-' + Date.now());
-  var idx = savedReports.findIndex(function(r) { return r.techName === key; });
+  data.savedAt = new Date().toISOString();
+  if (!data.id) { data.id = 'report-' + Date.now(); currentReportId = data.id; }
+  savedReports = JSON.parse(localStorage.getItem('av_reports') || '[]');
+  var idx = savedReports.findIndex(function(r) { return r.id === data.id; });
   if (idx >= 0) savedReports[idx] = data; else savedReports.push(data);
   localStorage.setItem('av_reports', JSON.stringify(savedReports));
   showToast('Report saved!');
 }
 
 function renderSavedReports() {
+  // Always read fresh from localStorage
+  savedReports = JSON.parse(localStorage.getItem('av_reports') || '[]');
   var el = document.getElementById('saved-reports-list');
   if (!savedReports.length) { el.innerHTML = '<p class="text-muted">No saved reports found.</p>'; return; }
   el.innerHTML = savedReports.map(function(r,i) {
-    return '<div class="report-item"><div><div style="font-weight:700">' + (r.techName||'Untitled') + '</div><div class="report-meta">' + (r.jobTitle||'') + ' &middot; ' + (r.department||'') + '</div></div><button class="load-btn" onclick="loadReport(' + i + ')">Load</button></div>';
+    var date = r.savedAt ? new Date(r.savedAt).toLocaleDateString() : '';
+    return '<div class="report-item"><div><div style="font-weight:700">' + (r.techName||'Untitled') + '</div><div class="report-meta">' + (r.jobTitle||'') + ' &middot; ' + (r.department||'') + (date ? ' &middot; ' + date : '') + '</div></div><button class="load-btn" onclick="loadReport(' + i + ')">Load</button></div>';
   }).join('');
 }
 
 function loadReport(i) {
+  savedReports = JSON.parse(localStorage.getItem('av_reports') || '[]');
   var r = savedReports[i];
+  if (!r) return;
+  currentReportId = r.id || null;
   document.getElementById('tech-name').value = r.techName || '';
   document.getElementById('department').value = r.department || '';
   document.getElementById('job-title').value = r.jobTitle || '';
@@ -448,10 +463,60 @@ function clearAll() {
     document.getElementById(id).value = '';
   });
   expenses = [];
+  mileageTotal = 0;
+  currentReportId = null;
   renderExpenses();
   calcTotals();
+  localStorage.removeItem('av_draft');
   showToast('Cleared');
 }
+
+// AUTO-SAVE DRAFT
+function saveDraft() {
+  var draft = {
+    techName: document.getElementById('tech-name').value,
+    department: document.getElementById('department').value,
+    jobTitle: document.getElementById('job-title').value,
+    email: document.getElementById('emp-email').value,
+    miles: document.getElementById('miles').value,
+    rate: document.getElementById('rate').value,
+    cashAdvance: document.getElementById('cash-advance').value,
+    otherAdvance: document.getElementById('other-advance').value,
+    expenses: expenses,
+    mileageTotal: mileageTotal
+  };
+  localStorage.setItem('av_draft', JSON.stringify(draft));
+}
+
+function restoreDraft() {
+  var raw = localStorage.getItem('av_draft');
+  if (!raw) return;
+  try {
+    var d = JSON.parse(raw);
+    document.getElementById('tech-name').value = d.techName || '';
+    document.getElementById('department').value = d.department || '';
+    document.getElementById('job-title').value = d.jobTitle || '';
+    document.getElementById('emp-email').value = d.email || '';
+    document.getElementById('miles').value = d.miles || '';
+    document.getElementById('rate').value = d.rate || '';
+    document.getElementById('cash-advance').value = d.cashAdvance || '';
+    document.getElementById('other-advance').value = d.otherAdvance || '';
+    mileageTotal = d.mileageTotal || 0;
+    if (mileageTotal) document.getElementById('mileage-total').value = '$' + mileageTotal.toFixed(2);
+    expenses = (d.expenses || []).map(function(e) { return Object.assign({}, e, { id: Date.now() + Math.random() }); });
+    renderExpenses();
+    calcTotals();
+  } catch(e) {}
+}
+
+// Attach autosave to all form inputs
+function attachAutosave() {
+  ['tech-name','department','job-title','emp-email','miles','rate','cash-advance','other-advance'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('input', saveDraft);
+  });
+}
+
 
 function exportPDF() {
   var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter' });
@@ -612,6 +677,8 @@ function showToast(msg) {
 
 renderExpenses();
 calcTotals();
+restoreDraft();
+attachAutosave();
 </script>
 </body>
 </html>
