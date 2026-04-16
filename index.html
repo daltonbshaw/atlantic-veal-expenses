@@ -238,7 +238,7 @@ function calcMileage() {
   saveDraft();
 }
 
-var CATEGORIES = ['Meals','Hotel','Airfare','Rental Car','Parking','Tolls','Supplies','Other'];
+var CATEGORIES = ['Meals','Hotel','Airfare','Rental Car','Parking','Gas or Tolls','Supplies','Other'];
 
 function addExpense(data) {
   expenses.push({
@@ -556,10 +556,25 @@ function exportPDF() {
 
   doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.text('Expenses', margin, y); y += lh;
   doc.setFont('helvetica','normal'); doc.setFontSize(10);
-  expenses.forEach(function(e, i) {
+  var sortedExpenses = expenses.slice().sort(function(a, b) {
+    var catA = (a.category || 'Other').toLowerCase();
+    var catB = (b.category || 'Other').toLowerCase();
+    return catA < catB ? -1 : catA > catB ? 1 : 0;
+  });
+  var lastCat = null;
+  sortedExpenses.forEach(function(e, i) {
+    var cat = e.category || 'Other';
+    // Print category header when group changes
+    if (cat !== lastCat) {
+      if (lastCat !== null) y += 4; // small gap between groups
+      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(26,115,232);
+      doc.text(cat.toUpperCase(), margin + 4, y); y += lh - 2;
+      doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(40,40,40);
+      lastCat = cat;
+    }
     var dateStr = e.date ? '  [' + e.date + ']' : '';
     var desc = (e.description ? ' — ' + e.description : '') + dateStr;
-    doc.text((i+1) + '. ' + (e.category||'—') + desc, margin+10, y);
+    doc.text('• ' + desc.trim() || '•', margin + 14, y);
     doc.text('$' + (parseFloat(e.amount)||0).toFixed(2), 510, y, { align: 'right' });
     y += lh;
   });
