@@ -646,7 +646,8 @@ function exportPDF() {
 
   var empName = (document.getElementById('tech-name').value || 'expense-report').replace(/\s+/g,'-').toLowerCase();
   doc.save('atlantic-veal-' + empName + '.pdf');
-  showToast('PDF exported!');
+  saveReport();
+  showToast('PDF exported & saved!');
 }
 
 function renderEmailReports() {
