@@ -523,6 +523,16 @@ function exportPDF() {
   var margin = 50;
   var y = 60;
   var lh = 18;
+  var pageH = doc.internal.pageSize.getHeight();
+  var bottomMargin = 60;
+
+  function checkPage(needed) {
+    needed = needed || lh;
+    if (y + needed > pageH - bottomMargin) {
+      doc.addPage();
+      y = 50;
+    }
+  }
 
   doc.setFont('helvetica','bold'); doc.setFontSize(20); doc.setTextColor(26,115,232);
   doc.text('Atlantic Veal', margin, y);
@@ -540,45 +550,53 @@ function exportPDF() {
     ['Email', document.getElementById('emp-email').value || '—']
   ];
   fields.forEach(function(pair) {
+    checkPage();
     doc.setFont('helvetica','bold'); doc.text(pair[0] + ':', margin, y);
     doc.setFont('helvetica','normal'); doc.text(pair[1], 200, y);
     y += lh;
   });
 
+  checkPage(lh * 2);
   y += 8; doc.line(margin, y, 560, y); y += 16;
 
-  var miles   = parseFloat(document.getElementById('miles').value) || 0;
-  var rate    = parseFloat(document.getElementById('rate').value) || 0;
+  var miles  = parseFloat(document.getElementById('miles').value) || 0;
+  var rate   = parseFloat(document.getElementById('rate').value) || 0;
   var mileage = mileageTotal;
+  checkPage(lh * 2);
   doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.text('Mileage', margin, y); y += lh;
   doc.setFont('helvetica','normal'); doc.setFontSize(11);
   doc.text('Miles: ' + miles + '   Rate: $' + rate.toFixed(2) + '/mi   Total: $' + mileage.toFixed(2), margin+10, y); y += lh + 6;
 
-  doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.text('Expenses', margin, y); y += lh;
+  checkPage(lh * 2);
+  doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(40,40,40); doc.text('Expenses', margin, y); y += lh;
   doc.setFont('helvetica','normal'); doc.setFontSize(10);
+
   var sortedExpenses = expenses.slice().sort(function(a, b) {
     var catA = (a.category || 'Other').toLowerCase();
     var catB = (b.category || 'Other').toLowerCase();
     return catA < catB ? -1 : catA > catB ? 1 : 0;
   });
+
   var lastCat = null;
-  sortedExpenses.forEach(function(e, i) {
+  sortedExpenses.forEach(function(e) {
     var cat = e.category || 'Other';
-    // Print category header when group changes
     if (cat !== lastCat) {
-      if (lastCat !== null) y += 4; // small gap between groups
+      checkPage(lh * 2);
+      if (lastCat !== null) y += 4;
       doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(26,115,232);
       doc.text(cat.toUpperCase(), margin + 4, y); y += lh - 2;
       doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(40,40,40);
       lastCat = cat;
     }
+    checkPage();
     var dateStr = e.date ? '  [' + e.date + ']' : '';
-    var desc = (e.description ? ' — ' + e.description : '') + dateStr;
-    doc.text('• ' + desc.trim() || '•', margin + 14, y);
+    var desc = (e.description ? e.description : '') + dateStr;
+    doc.text('• ' + (desc || ''), margin + 14, y);
     doc.text('$' + (parseFloat(e.amount)||0).toFixed(2), 510, y, { align: 'right' });
     y += lh;
   });
 
+  checkPage(lh * 4);
   y += 6; doc.line(margin, y, 560, y); y += 14;
 
   var expTotal = expenses.reduce(function(s,e) { return s + (parseFloat(e.amount)||0); }, 0);
@@ -587,10 +605,11 @@ function exportPDF() {
   var total = mileage + expTotal;
   var owed  = total - cash - other;
 
-  doc.setFont('helvetica','bold'); doc.setFontSize(11);
-  doc.text('Total Expenses:', margin, y); doc.text('$' + total.toFixed(2), 510, y, { align:'right' }); y += lh;
-  if (cash)  { doc.text('Cash Advance:',  margin, y); doc.text('-$' + cash.toFixed(2),  510, y, { align:'right' }); y += lh; }
-  if (other) { doc.text('Other Advance:', margin, y); doc.text('-$' + other.toFixed(2), 510, y, { align:'right' }); y += lh; }
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(40,40,40);
+  checkPage(); doc.text('Total Expenses:', margin, y); doc.text('$' + total.toFixed(2), 510, y, { align:'right' }); y += lh;
+  if (cash)  { checkPage(); doc.text('Cash Advance:',  margin, y); doc.text('-$' + cash.toFixed(2),  510, y, { align:'right' }); y += lh; }
+  if (other) { checkPage(); doc.text('Other Advance:', margin, y); doc.text('-$' + other.toFixed(2), 510, y, { align:'right' }); y += lh; }
+  checkPage(lh * 2);
   y += 4; doc.line(margin, y, 560, y); y += 14;
   doc.setFontSize(13);
   doc.setTextColor(owed < 0 ? 220 : 22, owed < 0 ? 38 : 163, owed < 0 ? 38 : 74);
