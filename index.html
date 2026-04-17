@@ -574,7 +574,11 @@ function exportPDF() {
   var sortedExpenses = expenses.slice().sort(function(a, b) {
     var catA = (a.category || 'Other').toLowerCase();
     var catB = (b.category || 'Other').toLowerCase();
-    return catA < catB ? -1 : catA > catB ? 1 : 0;
+    if (catA < catB) return -1;
+    if (catA > catB) return 1;
+    var dateA = a.date || '';
+    var dateB = b.date || '';
+    return dateA < dateB ? -1 : dateA > dateB ? 1 : 0;
   });
 
   var lastCat = null;
@@ -589,9 +593,10 @@ function exportPDF() {
       lastCat = cat;
     }
     checkPage();
-    var dateStr = e.date ? '  [' + e.date + ']' : '';
-    var desc = (e.description ? e.description : '') + dateStr;
-    doc.text('• ' + (desc || ''), margin + 14, y);
+    var line = '• ';
+    if (e.date) line += e.date + '  ';
+    if (e.description) line += e.description;
+    doc.text(line, margin + 14, y);
     doc.text('$' + (parseFloat(e.amount)||0).toFixed(2), 510, y, { align: 'right' });
     y += lh;
   });
