@@ -582,11 +582,25 @@ function exportPDF() {
   });
 
   var lastCat = null;
+  var catTotal = 0;
+
+  function printCatTotal(cat) {
+    if (cat === null) return;
+    checkPage();
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(80,80,80);
+    doc.text(cat.toUpperCase() + ' TOTAL', margin + 14, y);
+    doc.text('$' + catTotal.toFixed(2), 510, y, { align: 'right' });
+    doc.setDrawColor(220,220,220); doc.line(margin + 14, y + 3, 510, y + 3);
+    y += lh;
+    catTotal = 0;
+  }
+
   sortedExpenses.forEach(function(e) {
     var cat = e.category || 'Other';
     if (cat !== lastCat) {
+      printCatTotal(lastCat);
       checkPage(lh * 2);
-      if (lastCat !== null) y += 4;
+      if (lastCat !== null) y += 6;
       doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(26,115,232);
       doc.text(cat.toUpperCase(), margin + 4, y); y += lh - 2;
       doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(40,40,40);
@@ -598,8 +612,10 @@ function exportPDF() {
     if (e.description) line += e.description;
     doc.text(line, margin + 14, y);
     doc.text('$' + (parseFloat(e.amount)||0).toFixed(2), 510, y, { align: 'right' });
+    catTotal += parseFloat(e.amount) || 0;
     y += lh;
   });
+  printCatTotal(lastCat);
 
   checkPage(lh * 4);
   y += 6; doc.line(margin, y, 560, y); y += 14;
